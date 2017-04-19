@@ -15,21 +15,27 @@ class XunSearch extends \XS {
         }
 
         add_action( 'init', array( $this, 'init' ) );
-        add_action( 'admin_init', array( $this, 'admin_init' ) );
         return parent::__construct('post');
     }
 
     public function init() {
-        //Get ID list when search hook
-        add_action( 'posts_where_request', array( $this, 'posts_where_request' ), 10, 2 );
-        //add index when publish post hook
-        add_action( 'publish_post', array( $this, 'publish_post' ), 10, 2 );
-        //add index when unstrash post hook
-        add_action( 'untrash_post', array( $this, 'untrash_post' ), 10, 1 );
-        //delete index when trash post hook
-        add_action('trash_post', array($this, 'trash_post'), 10, 2);
+
+        //judge enable this plugin or not
+        $options = maybe_unserialize(get_option('xunsearch_options'));
+        if(isset($options['enable']) &&  $options['enable'] == '1'){
+            //Get ID list when search hook
+            add_action( 'posts_where_request', array( $this, 'posts_where_request' ), 10, 2 );
+            //add index when publish post hook
+            add_action( 'publish_post', array( $this, 'publish_post' ), 10, 2 );
+            //add index when unstrash post hook
+            add_action( 'untrash_post', array( $this, 'untrash_post' ), 10, 1 );
+            //delete index when trash post hook
+            add_action('trash_post', array($this, 'trash_post'), 10, 2);
+        }
+
         //add option page
         add_action('admin_menu', array($this, 'admin_menu'));
+        add_action( 'admin_init', array( $this, 'admin_init' ) );
     }
 
     public function admin_init() {
@@ -48,6 +54,14 @@ class XunSearch extends \XS {
             'XunSearch Settings', // Title
             array( $this, 'print_section_info' ), // Callback
             'xunsearch-options' // Page
+        );
+
+        add_settings_field(
+            'enable', // ID
+            'Enable', // Title
+            array( $this, 'enable_callback' ), // Callback
+            'xunsearch-options', // Page
+            'setting_section_id' // Section
         );
 
         add_settings_field(
@@ -76,6 +90,8 @@ class XunSearch extends \XS {
     public function sanitize( $input )
     {
         $new_input = array();
+        if( isset( $input['enable'] ) )
+            $new_input['enable'] = sanitize_text_field( $input['enable'] );
         if( isset( $input['index_server'] ) )
             $new_input['index_server'] = sanitize_text_field( $input['index_server'] );
         if( isset( $input['search_server'] ) )
@@ -94,6 +110,15 @@ class XunSearch extends \XS {
     public function print_section_info()
     {
         print 'Enter your XunSearch settings:';
+    }
+    /**
+     * Get the settings option array and print one of its values
+     */
+    public function enable_callback()
+    {
+        printf(
+            '<input size="76" name="xunsearch_options[enable]" type="checkbox" id="enable" '. checked($this->options['enable'], true, false) . ' value="1" />'
+        );
     }
     /**
      * Get the settings option array and print one of its values
@@ -189,8 +214,10 @@ class XunSearch extends \XS {
      * @param $ID
      */
     public function untrash_post($ID) {
-        $post = WP_Post::get_instance($ID);
-        static::publishPost($ID, $post);
+        if(get_post_meta($ID, '_wp_trash_meta_status', true) == 'publish'){
+            $post = WP_Post::get_instance($ID);
+            $this->publish_post($ID, $post);
+        }
     }
 
     /**

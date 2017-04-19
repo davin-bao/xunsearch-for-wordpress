@@ -1,7 +1,7 @@
 # xunsearch-for-wordpress
 xunsearch for wordpress plugin
 
-=== XunSearch ===
+## Description 
 Contributors: davin.bao
 Requires at least: 4.7.3
 Tested up to: 4.7.3
@@ -10,19 +10,30 @@ License: GPLv2 or later
 
 XunSearch for wordpress
 
-== Description ==
+## Installation
+There has two way to install this plugin:
 
-XunSearch for wordpress
+1. Upload the XunSearch plugin to your blog.
 
-== Installation ==
+2. Online Install
+    a. Plugins -> Install Plugin -> Search
+    b. Input "XunSearch"
+    c. Click Install Button
+    
+## Configure
 
-Upload the XunSearch plugin to your blog.
+1. In Dashboard, You can Click Plugins -> XunSearch
 
-1, 2, 3: You're done!
+2. Now you can config server info and enable this plugin or not
 
-== Changelog ==
+## Support
 
-= 0.1.00 =
-*Release Date - 17 May 2017*
+If you have any quea
+ 
+## Changelog
 
-* Init code
+### 0.1.00
+_Release Date - 17 May 2017_
+
+ * Init code
+ 
