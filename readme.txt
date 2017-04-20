@@ -6,6 +6,7 @@ Stable tag: 0.1.00
 License: GPLv2 or later
 
 XunSearch for wordpress
+Author Blog: http://www.tech06.com
 
 == Description ==
 
